@@ -1,0 +1,210 @@
+http://rensanning.iteye.com/blog/1930853
+
+对于Java语言的一些模板代码（Boilerplate Code），比如我们最常见的访问类的成员变量的getter/setter。如果没有特殊需求，这些方法一般都按照统一的定义规则来书写，而且内容基本不会有什么变化。 
+
+当然现在流行的Java的IDE开发工具都提供这些模板代码的自动生成，或者一些编辑器也提供Snippet功能，来减少这些重复性的工作。以最常见的Java开发IDE的Eclipse为例，他可以提供getter()/setter()、equals()、hashCode()、toString()等方法的自动生成。 
+
+Lombok是基于MIT license的去除Java特有模板代码的工具。他并不像Eclipse那样自动去生成代码，而是在编写代码的时候使用注解来达到同样的效果。 
+
+官网：http://projectlombok.org/ 
+
+Lombok可以直接在javac命令中使用，也可以结合Eclipse或NetBeans等IDE工具使用。首先需要在官网下载lombok.jar（v0.12.0 "Angry Butterfly" (July 16th, 2013)）。 
+
+如果使用javac编译Java文件的话，可以将lombok.jar放到classpath下，或者使用 
+引用
+javac -cp lombok.jar MyCode.java
+
+
+不过一般我们更习惯使用IDE工具，所以双击Lombok.jar，他可以自动检测机器上的Eclipse或NetBeans等IDE，选择你想使用的IDE后点击“Install/Update”后重启IDE，然后还需要将Lombok.jar添加到你的工程的Build path中。 
+
+如果不能检测到IDE的话，可以按照官方说明手动配置一下Lombok.jar。 
+以Eclipse为例： 
+1. 将 lombok.jar 复制到 eclipse.ini 所在的文件夹目录下 
+2. 打开 eclipse.ini，在最后面插入以下两行并保存： 
+  -javaagent:lombok.jar 
+  -Xbootclasspath/a:lombok.jar 
+3.重启 eclipse 
+
+Lombok核心特征是使用注解来在编译期创建代码从而达到减少模板代码的书写。 
+
+以下看看它的一些常见用法。 
+
+（1）成员变量的访问 
+以一个最常见的Bean为例：Member（id、name、sex） 
+
+一般我们的写法是： 
+Java代码  收藏代码
+public class Member {  
+    private int id;  
+    private String name;  
+    private boolean sex;  
+    public int getId() {  
+        return id;  
+    }  
+    public void setId(int id) {  
+        this.id = id;  
+    }  
+    public String getName() {  
+        return name;  
+    }  
+    public void setName(String name) {  
+        this.name = name;  
+    }  
+    public boolean isSex() {  
+        return sex;  
+    }  
+    public void setSex(boolean sex) {  
+        this.sex = sex;  
+    }  
+}  
+
+ 
+
+使用了Lombok的@Getter @Setter 
+Java代码  收藏代码
+import lombok.Getter;  
+import lombok.Setter;  
+  
+@Getter @Setter  
+public class Member1 {  
+    private int id;  
+    private String name;  
+    private boolean sex;  
+}  
+
+ 
+
+使用了Lombok的@EqualsAndHashCode 
+Java代码  收藏代码
+import lombok.EqualsAndHashCode;  
+  
+@EqualsAndHashCode  
+public class Member2 {  
+    private int id;  
+    private String name;  
+    private boolean sex;  
+}  
+
+ 
+
+使用了Lombok的@ToString 
+Java代码  收藏代码
+import lombok.ToString;  
+  
+@ToString  
+public class Member3 {  
+    private int id;  
+    private String name;  
+    private boolean sex;  
+}  
+
+ 
+
+使用了Lombok的@Data 
+Java代码  收藏代码
+import lombok.Data;  
+  
+@Data  
+public class Member4 {  
+    private int id;  
+    private String name;  
+    private boolean sex;  
+}  
+
+ 
+
+（2）构造函数 
+Java代码  收藏代码
+import lombok.AllArgsConstructor;  
+  
+@AllArgsConstructor  
+public class Constructor {  
+    private int id;  
+    private String name;  
+    private boolean sex;  
+}  
+
+ 
+
+Java代码  收藏代码
+import lombok.RequiredArgsConstructor;  
+  
+@RequiredArgsConstructor  
+public class Constructor1 {  
+    private final int id;  
+    private String name;  
+    private boolean sex;  
+}  
+
+ 
+
+Java代码  收藏代码
+import lombok.NoArgsConstructor;  
+  
+@NoArgsConstructor  
+public class Constructor2 {  
+    private int id;  
+    private String name;  
+    private boolean sex;  
+}  
+
+ 
+
+（3）异常 
+一般的异常处理代码： 
+Java代码  收藏代码
+public void read() {  
+    try {  
+        FileReader in = new FileReader("data.txt");  
+        // ...以后代码省略  
+    } catch (FileNotFoundException e) {  
+        // ...异常处理省略  
+    }  
+}  
+
+
+使用Lombok的@SneakyThrows 
+Java代码  收藏代码
+@SneakyThrows  
+public void read1() {  
+    FileReader in = new FileReader("data.txt");  
+    // ...以后代码省略  
+}  
+
+
+（4）同步 
+一般的同步处理代码： 
+Java代码  收藏代码
+public synchronized void countup1() {  
+    // 同步处理  
+}  
+  
+public void countup2() {  
+    synchronized (this) {  
+        // 同步处理  
+    }  
+}  
+  
+private final Object lock = new Object();  
+  
+public void countup3() {  
+    synchronized(lock) {  
+        // 同步处理  
+    }  
+}  
+
+
+使用Lombok的@Synchronized 
+Java代码  收藏代码
+@Synchronized  
+public void countup() {  
+    // 同步处理  
+}  
+
+
+官方网站上提供了一段视频，对于Lombok的使用提供了很详细的说明！ 
+
+http://codezine.jp/article/detail/7274 
+http://java.dzone.com/articles/lombok-reduces-your 
+http://www.oschina.net/translate/lombok-reduces-your-boilerplate-code 
+http://www.blogjava.net/fancydeepin/archive/2012/07/12/lombok.html
